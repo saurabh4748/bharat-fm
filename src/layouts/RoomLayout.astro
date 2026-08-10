@@ -44,6 +44,11 @@ const ytPlaylistId = room.ytPlaylistId || '';
       <h1 class="room-title">{room.nameDevanagari}</h1>
     </main>
 
+    <!-- Preconnect for faster YouTube load -->
+    <link rel="preconnect" href="https://www.youtube.com" />
+    <link rel="preconnect" href="https://i.ytimg.com" />
+    <link rel="preconnect" href="https://img.youtube.com" />
+
     <!-- Hidden YouTube player -->
     <div id="yt-player-wrap" data-yt-playlist={ytPlaylistId} style="position:fixed;top:-9999px;left:-9999px;width:320px;height:180px;pointer-events:none;opacity:0;">
       <div id="yt-player"></div>
@@ -455,6 +460,7 @@ const ytPlaylistId = room.ytPlaylistId || '';
 
   function onPlayerReady() {
     player.setVolume(80);
+    player.setShuffle?.(true);
     updateTrackInfo();
   }
 
@@ -504,8 +510,9 @@ const ytPlaylistId = room.ytPlaylistId || '';
     }
   });
 
-  // Load YouTube IFrame API
+  // Load YouTube IFrame API early
   const tag = document.createElement('script');
   tag.src = 'https://www.youtube.com/iframe_api';
-  document.body.appendChild(tag);
+  tag.async = true;
+  document.head.appendChild(tag);
 </script>
