@@ -1,0 +1,195 @@
+---
+import Base from '../layouts/Base.astro';
+import { rooms } from '../content/rooms';
+
+const title = 'bharat-fm | everyday Indian ambiance';
+const description = 'A growing series of rooms that recreate the sound and feel of 90s Indian everyday life.';
+const ogImage = `${Astro.site}og/default.png`;
+---
+
+<Base title={title} description={description} ogImage={ogImage} ogUrl={Astro.url.href}>
+  <div class="home-page">
+    <div class="home-bg" aria-hidden="true"></div>
+
+    <header class="home-header">
+      <span class="site-wordmark">bharat-fm</span>
+      <span class="site-tagline">everyday Indian ambiance</span>
+    </header>
+
+    <main class="rooms-grid">
+      {rooms.map((room) => (
+        <a
+          href={`/${room.slug}/`}
+          class="room-door"
+          style={`--door-bg: ${room.colors.background}; --door-primary: ${room.colors.primary}; --door-accent: ${room.colors.accent};`}
+        >
+          <div class="door-scene" style={room.backgroundImage ? `background-image:url('${room.backgroundImage}');background-size:cover;background-position:center;` : ''} aria-hidden="true"></div>
+          <div class="door-content">
+            <span class="door-name-deva">{room.nameDevanagari}</span>
+          </div>
+          <span class="door-enter">Enter</span>
+        </a>
+      ))}
+    </main>
+
+    <footer class="home-footer">
+      No logins. No accounts. Just vibes.
+    </footer>
+  </div>
+</Base>
+
+<style>
+  .home-page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .home-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(239,68,68,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(251,146,60,0.1) 0%, transparent 55%),
+      #0a0a0a;
+  }
+
+  .home-header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3.5rem 2rem 2rem;
+    text-align: center;
+  }
+
+  .site-wordmark {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .site-tagline {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* Room grid */
+  .rooms-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    width: 100%;
+    margin: 2rem auto 0;
+    padding: 0 1.5rem;
+    flex: 1;
+  }
+
+  /* Each doorway */
+  .room-door {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 300px;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .room-door:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+
+  .door-scene {
+    position: absolute;
+    inset: 0;
+    background-color: var(--door-bg);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .door-scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+  }
+
+  .door-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem 1.5rem 0.5rem;
+  }
+
+  .door-name-deva {
+    display: block;
+    font-family: 'Yatra One', 'Noto Sans Devanagari', system-ui, sans-serif;
+    font-size: clamp(2.5rem, 7vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .door-name-en {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 0.2rem;
+  }
+
+  .door-sub {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-top: 0.2rem;
+  }
+
+  .door-enter {
+    position: relative;
+    z-index: 2;
+    display: block;
+    padding: 0.75rem 1.5rem 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s, transform 0.2s;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .room-door:hover .door-enter {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .home-footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 2rem 1rem 2.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.25);
+  }
+</style>

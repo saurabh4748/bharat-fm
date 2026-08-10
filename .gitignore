@@ -1,0 +1,22 @@
+# build output
+dist/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# misc
+.DS_Store
+*.local
+
+# generated OG images are kept in public/og so they are committed/deployed
+# do not ignore public/og/*.png

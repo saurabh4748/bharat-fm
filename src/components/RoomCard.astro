@@ -1,0 +1,40 @@
+---
+import type { Room } from '../types/room';
+
+export interface Props {
+  room: Room;
+}
+
+const { room } = Astro.props;
+const href = `/${room.slug}/`;
+
+const iconMap: Record<string, string> = {
+  scissors: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8 8 21 21"/><path d="M21 3 8.5 14.5"/><circle cx="17" cy="17" r="3"/></svg>`,
+  coffee: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6.01" y1="2" y2="2"/><line x1="10" x2="10.01" y1="2" y2="2"/></svg>`,
+};
+
+const iconSvg = iconMap[room.icon] || iconMap.scissors;
+---
+
+<a
+  href={href}
+  class="group block relative overflow-hidden rounded-3xl p-6 transition-transform duration-200 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white/50"
+  style={`background: linear-gradient(135deg, ${room.colors.background} 0%, ${room.colors.primary} 100%); color: ${room.colors.text};`}
+>
+  <div class="relative z-10 flex flex-col h-full min-h-[180px]">
+    <div class="mb-auto">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/15 mb-4">
+        <Fragment set:html={iconSvg} />
+      </div>
+      <h3 class="text-2xl font-bold tracking-tight">{room.name}</h3>
+      <p class="text-sm opacity-90 mt-1">{room.subtitle}</p>
+    </div>
+    <div class="mt-4 text-xs opacity-70 group-hover:opacity-100 transition">Enter room &rarr;</div>
+  </div>
+
+  <div
+    class="absolute inset-0 opacity-0 group-hover:opacity-20 transition duration-300"
+    style={`background: radial-gradient(circle at top right, ${room.colors.accent}, transparent 60%);`}
+  >
+  </div>
+</a>

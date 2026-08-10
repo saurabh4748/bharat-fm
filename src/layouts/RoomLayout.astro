@@ -1,0 +1,511 @@
+---
+import Base from './Base.astro';
+import type { Room } from '../types/room';
+import { getRoomPageUrl, getRoomOgImageUrl } from '../lib/room';
+export interface Props {
+  room: Room;
+}
+
+const { room } = Astro.props;
+const siteUrl = Astro.site?.toString() || 'https://bharat-fm.com';
+const ogImage = getRoomOgImageUrl(room, siteUrl);
+const ogUrl = getRoomPageUrl(room, siteUrl);
+const ytMusicUrl = room.ytMusicUrl || `https://music.youtube.com/playlist?list=${room.ytPlaylistId}`;
+const ytPlaylistId = room.ytPlaylistId || '';
+---
+
+<Base title={room.meta.title} description={room.meta.description} ogImage={ogImage} ogUrl={ogUrl}>
+  <div class="room-page" style={`--room-bg:${room.colors.background};--room-primary:${room.colors.primary};--room-accent:${room.colors.accent};`}>
+
+    <!-- Background -->
+    <div class={`scene-bg${room.backgroundImage ? ' scene-bg--image' : ''}`}
+      style={room.backgroundImage ? `background-image:url('${room.backgroundImage}');` : ''}
+      aria-hidden="true"></div>
+
+    <!-- TOP-LEFT: back button -->
+    <div class="corner-tl">
+      <a href="/" class="back-link" title="All rooms">
+        <span>← ALL ROOMS</span>
+      </a>
+    </div>
+
+
+    <!-- TOP-RIGHT: stream button -->
+    <div class="corner-tr">
+      <a href={ytMusicUrl} target="_blank" rel="noopener noreferrer" class="stream-btn">
+        <svg class="yt-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        YT Music
+        <svg class="btn-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </a>
+    </div>
+
+    <!-- CENTER: room title -->
+    <main class="title-area">
+      <h1 class="room-title">{room.nameDevanagari}</h1>
+    </main>
+
+    <!-- Hidden YouTube player -->
+    <div id="yt-player-wrap" data-yt-playlist={ytPlaylistId} style="position:fixed;top:-9999px;left:-9999px;width:320px;height:180px;pointer-events:none;opacity:0;">
+      <div id="yt-player"></div>
+    </div>
+
+    <!-- BOTTOM-CENTER: custom player pill -->
+    <div class="player-area">
+      <div class="player-pill">
+        <div class="pill-art">
+          <img id="track-art" src="" alt="" />
+          <div class="pill-art-fallback">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+          </div>
+        </div>
+        <div class="pill-info">
+          <span class="pill-track shimmer" id="track-name"></span>
+          <span class="pill-artist shimmer" id="track-artist"></span>
+          <div class="pill-progress" id="progress-bar">
+            <div class="pill-bar-fill" id="progress-fill"></div>
+          </div>
+          <span class="pill-time" id="track-time"></span>
+        </div>
+        <div class="pill-controls">
+          <button class="pill-btn" id="btn-prev" aria-label="Previous">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          </button>
+          <button class="pill-btn pill-play" id="btn-play" aria-label="Play / Pause">
+            <svg id="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <button class="pill-btn" id="btn-next" aria-label="Next">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Base>
+
+<style>
+  /* ── Base ─────────────────────────────────────────── */
+  .room-page {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  /* ── Background ───────────────────────────────────── */
+  .scene-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 120% 80% at 70% 60%, var(--room-primary) 0%, transparent 65%),
+      radial-gradient(ellipse 80% 60% at 20% 80%, var(--room-accent) 0%, transparent 55%),
+      var(--room-bg);
+    filter: saturate(1.15);
+  }
+  .scene-bg--image {
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.7) brightness(0.95);
+  }
+  .scene-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(0,0,0,0.35) 100%);
+  }
+  .scene-bg--image::after {
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, transparent 35%, rgba(0,0,0,0.25) 100%);
+  }
+
+  /* ── Corner positions (fixed, above bg) ──────────── */
+  .corner-tl,
+  .corner-tr,
+  .title-area,
+  .player-area {
+    position: absolute;
+    z-index: 20;
+  }
+
+  /* TOP-LEFT: clock + back */
+  .corner-tl {
+    top: 1.1rem;
+    left: 1.4rem;
+  }
+  .back-link, .stream-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    transition: color 0.15s;
+  }
+  .back-link:hover, .stream-btn:hover { color: #fff; }
+  .yt-icon { flex-shrink: 0; opacity: 0.7; }
+  .btn-arrow { opacity: 0.4; flex-shrink: 0; }
+
+  /* TOP-RIGHT */
+  .corner-tr {
+    top: 1.1rem;
+    right: 1.4rem;
+  }
+
+  /* ── TITLE: center ──────────────────────────────── */
+  .title-area {
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    padding-bottom: 25rem;
+  }
+  .room-title {
+    font-family: 'Yatra One', 'Noto Sans Devanagari', system-ui, sans-serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 400;
+    line-height: 0.95;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.35);
+  }
+
+  /* ── BOTTOM-CENTER: player ──────────────────────── */
+  .player-area {
+    bottom: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+  }
+
+
+  .player-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.15rem;
+    padding: 0.75rem 1.75rem 0.75rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+
+  .pill-art {
+    position: relative;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .pill-art.spinning {
+    animation-play-state: running;
+  }
+  .pill-art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none;
+  }
+  .pill-art img.loaded { display: block; }
+  .pill-art img.loaded ~ .pill-art-fallback { display: none; }
+  .pill-art-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pill-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 260px;
+    max-width: 380px;
+  }
+  .pill-track {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+  .pill-artist {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  /* Shimmer loading animation */
+  .shimmer {
+    display: block;
+    height: 1em;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  .pill-track.shimmer {
+    width: 160px;
+    height: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+  .pill-artist.shimmer {
+    width: 100px;
+    height: 0.85rem;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .pill-progress {
+    margin-top: 0.3rem;
+    height: 4px;
+    width: 100%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .pill-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 3px;
+    transition: width 0.5s linear;
+  }
+  .pill-time {
+    margin-top: 0.2rem;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.02em;
+  }
+
+  .pill-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+  }
+  .pill-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.12s, background 0.12s;
+    width: 40px;
+    height: 40px;
+  }
+  .pill-btn:hover { color: #fff; background: rgba(255,255,255,0.25); }
+  .pill-play {
+    background: #fff;
+    color: #111;
+    width: 52px;
+    height: 52px;
+  }
+  .pill-play:hover { background: rgba(255,255,255,0.88); color: #111; }
+
+  /* ── Mobile ───────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .title-area { padding-bottom: 4rem; }
+    .room-title { font-size: clamp(3rem, 18vw, 6rem); }
+    .player-area { left: 1rem; bottom: 1.5rem; }
+    .pill-info { min-width: 120px; max-width: 160px; }
+  }
+</style>
+
+<script>
+  // ── YouTube IFrame Player ──────────────────────────────
+  const ytWrap = document.getElementById('yt-player-wrap');
+  const ytPlaylistId = ytWrap?.dataset.ytPlaylist ?? '';
+  const trackNameEl = document.getElementById('track-name');
+  const trackArtistEl = document.getElementById('track-artist');
+  const trackArtImg = document.getElementById('track-art') as HTMLImageElement | null;
+  const pillArtEl = document.querySelector('.pill-art') as HTMLElement | null;
+  const progressFill = document.getElementById('progress-fill') as HTMLElement | null;
+  const trackTimeEl = document.getElementById('track-time');
+  const btnPlay = document.getElementById('btn-play');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const iconPlay = document.getElementById('icon-play') as HTMLElement | null;
+  const iconPause = document.getElementById('icon-pause') as HTMLElement | null;
+
+  let player: any = null;
+  let isPlaying = false;
+  let progressInterval: number | null = null;
+
+  function fmt(secs: number) {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  async function updateTrackInfo() {
+    if (!player || !player.getVideoData) return;
+    const data = player.getVideoData();
+    const videoId = data?.video_id ?? player.getVideoUrl?.()?.match(/v=([^&]+)/)?.[1];
+
+    // Fetch author via oEmbed in parallel with getting local data
+    let author = data?.author || '';
+    if (!author && player.getVideoUrl?.()) {
+      try {
+        const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(player.getVideoUrl())}&format=json`);
+        if (res.ok) {
+          const oEmbed = await res.json();
+          author = oEmbed.author_name || '';
+        }
+      } catch (e) {}
+    }
+
+    // Show everything at once
+    if (data?.title && trackNameEl) {
+      trackNameEl.textContent = data.title;
+      trackNameEl.classList.remove('shimmer');
+    }
+    if (author && trackArtistEl) {
+      trackArtistEl.textContent = author;
+      trackArtistEl.classList.remove('shimmer');
+    }
+    if (videoId && trackArtImg) {
+      const thumbUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+      if (trackArtImg.src !== thumbUrl) {
+        trackArtImg.src = thumbUrl;
+        trackArtImg.onload = () => trackArtImg.classList.add('loaded');
+      }
+    }
+  }
+
+  function startProgressUpdate() {
+    if (progressInterval) clearInterval(progressInterval);
+    progressInterval = window.setInterval(() => {
+      if (!player || !isPlaying) return;
+      try {
+        const pos = player.getCurrentTime();
+        const dur = player.getDuration();
+        if (dur > 0) {
+          const pct = (pos / dur) * 100;
+          if (progressFill) progressFill.style.width = `${pct}%`;
+          if (trackTimeEl) trackTimeEl.textContent = `${fmt(pos)} / ${fmt(dur)}`;
+        }
+      } catch (e) {
+        console.error('[progress] error:', e);
+      }
+    }, 500);
+  }
+
+  function onPlayerStateChange(event: any) {
+    const state = event.data;
+    // YT.PlayerState: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
+    if (state === 1) { // playing
+      isPlaying = true;
+      if (iconPlay && iconPause) {
+        iconPlay.style.display = 'none';
+        iconPause.style.display = '';
+      }
+      if (pillArtEl) pillArtEl.classList.add('spinning');
+      updateTrackInfo();
+      startProgressUpdate();
+    } else if (state === 2 || state === 0) { // paused or ended
+      isPlaying = false;
+      if (iconPlay && iconPause) {
+        iconPlay.style.display = '';
+        iconPause.style.display = 'none';
+      }
+      if (pillArtEl) pillArtEl.classList.remove('spinning');
+    }
+    // When a new video starts (state changes to playing), update info
+    if (state === 1) {
+      setTimeout(updateTrackInfo, 300);
+    }
+  }
+
+  function onPlayerReady() {
+    player.setVolume(80);
+    updateTrackInfo();
+  }
+
+  // YouTube API callback
+  (window as any).onYouTubeIframeAPIReady = () => {
+    if (!ytPlaylistId) return;
+    player = new (window as any).YT.Player('yt-player', {
+      height: '180',
+      width: '320',
+      playerVars: {
+        listType: 'playlist',
+        list: ytPlaylistId,
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        rel: 0,
+        modestbranding: 1,
+      },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+      },
+    });
+  };
+
+  // Controls
+  btnPlay?.addEventListener('click', () => {
+    if (!player) return;
+    if (isPlaying) {
+      player.pauseVideo();
+    } else {
+      player.playVideo();
+    }
+  });
+  btnPrev?.addEventListener('click', () => player?.previousVideo?.());
+  btnNext?.addEventListener('click', () => player?.nextVideo?.());
+
+  // Seek on progress bar click
+  const progressBar = document.getElementById('progress-bar');
+  progressBar?.addEventListener('click', (e) => {
+    if (!player) return;
+    const rect = progressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    const dur = player.getDuration() || 0;
+    if (dur > 0) {
+      player.seekTo(pct * dur, true);
+    }
+  });
+
+  // Load YouTube IFrame API
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.body.appendChild(tag);
+</script>

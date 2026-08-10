@@ -1,0 +1,33 @@
+---
+import SiteMeta from '../components/SiteMeta.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogUrl?: string;
+}
+
+const { title, description, ogImage, ogUrl } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <SiteMeta title={title} description={description} ogImage={ogImage} ogUrl={ogUrl} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700;800;900&family=Yatra+One&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://open.spotify.com" />
+    <link rel="preconnect" href="https://www.youtube.com" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; }
+      body { font-family: system-ui, -apple-system, sans-serif; }
+      .deva { font-family: 'Noto Sans Devanagari', system-ui, sans-serif; }
+    </style>
+  </head>
+  <body class="min-h-screen antialiased bg-neutral-950 text-neutral-100">
+    <slot />
+  </body>
+</html>
