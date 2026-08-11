@@ -523,6 +523,13 @@ const ytPlaylistId = room.ytPlaylistId || '';
       events: {
         onReady: onPlayerReady,
         onStateChange: onPlayerStateChange,
+        onError: (e: any) => {
+          console.warn('[YT Player] Error code:', e.data);
+          // Error 150 or 101 = embedding restricted, skip to next
+          if (e.data === 150 || e.data === 101) {
+            player?.nextVideo?.();
+          }
+        },
       },
     });
   };
