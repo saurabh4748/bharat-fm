@@ -12,7 +12,10 @@ const ogImage = `${Astro.site}og/default.png`;
     <div class="home-bg" aria-hidden="true"></div>
 
     <header class="home-header">
-      <span class="site-wordmark">bharat-fm</span>
+      <span class="site-wordmark">
+        <svg class="radio-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H8.3l8.26-3.34L15.88 1 3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/></svg>
+        भारत-fm
+      </span>
       <span class="site-tagline">everyday Indian ambiance</span>
     </header>
 
@@ -54,9 +57,10 @@ const ogImage = `${Astro.site}og/default.png`;
     inset: 0;
     z-index: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(239,68,68,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(251,146,60,0.1) 0%, transparent 55%),
-      #0a0a0a;
+      radial-gradient(ellipse 80% 60% at 80% 10%, rgba(239,68,68,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 50% at 10% 90%, rgba(251,146,60,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(168,85,247,0.08) 0%, transparent 60%),
+      linear-gradient(160deg, #0a0a0a 0%, #1a0a1a 40%, #0a0f1a 70%, #0a0a0a 100%);
   }
 
   .home-header {
@@ -65,16 +69,24 @@ const ogImage = `${Astro.site}og/default.png`;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 3.5rem 2rem 2rem;
+    padding: 2.5rem 2rem 1rem;
     text-align: center;
   }
 
   .site-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: clamp(2.2rem, 6vw, 4rem);
     font-weight: 900;
     letter-spacing: -0.03em;
     color: #fff;
     line-height: 1;
+  }
+  .radio-icon {
+    width: 1em;
+    height: 1em;
+    opacity: 0.7;
   }
 
   .site-tagline {
@@ -90,9 +102,9 @@ const ogImage = `${Astro.site}og/default.png`;
     position: relative;
     z-index: 10;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    max-width: 900px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    max-width: 1400px;
     width: 100%;
     margin: 2rem auto 0;
     padding: 0 1.5rem;
@@ -105,7 +117,7 @@ const ogImage = `${Astro.site}og/default.png`;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 300px;
+    min-height: 280px;
     border-radius: 1.25rem;
     overflow: hidden;
     text-decoration: none;
@@ -191,5 +203,43 @@ const ogImage = `${Astro.site}og/default.png`;
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     color: rgba(255,255,255,0.25);
+  }
+
+  /* ── Mobile ───────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .home-header {
+      padding: 2.5rem 1rem 1.5rem;
+    }
+    .site-wordmark {
+      font-size: clamp(1.8rem, 10vw, 3rem);
+    }
+    .site-tagline {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+    }
+    .rooms-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      padding: 0 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .room-door {
+      min-height: 150px;
+      border-radius: 1rem;
+    }
+    .door-content {
+      padding: 1rem 1rem 0.4rem;
+    }
+    .door-name-deva {
+      font-size: clamp(2rem, 10vw, 3rem);
+    }
+    .door-enter {
+      padding: 0.5rem 1rem 1rem;
+      opacity: 1;
+      transform: none;
+    }
+    .home-footer {
+      padding: 1.5rem 1rem 2rem;
+    }
   }
 </style>

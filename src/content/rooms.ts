@@ -107,6 +107,58 @@ export const rooms: Room[] = [
       description: 'Waiting on the platform, chai, announcements, and old film songs.',
     },
   },
+  {
+    id: 'truck',
+    slug: 'truck',
+    name: 'Truck',
+    nameDevanagari: 'ट्रक',
+    subtitle: 'Highway truck vibes',
+    description: 'The songs blasting from decorated trucks on Indian highways.',
+    icon: 'truck',
+    colors: {
+      background: '#1a1206',
+      primary: '#f59e0b',
+      accent: '#ef4444',
+      text: '#fef3c7',
+    },
+    player: {
+      type: 'youtube',
+      playlistId: '',
+    },
+    ytPlaylistId: 'PLDuSmFEUxKtQ',
+    ytMusicUrl: 'https://music.youtube.com/playlist?list=PLDuSmFEUxKtQ',
+    backgroundImage: '/rooms/truck.png',
+    meta: {
+      title: 'Truck | bharat-fm',
+      description: 'The songs blasting from decorated trucks on Indian highways.',
+    },
+  },
+  {
+    id: 'chhat',
+    slug: 'chhat',
+    name: 'Chhat',
+    nameDevanagari: 'छत',
+    subtitle: 'Rooftop evenings',
+    description: 'Songs that play on Indian rooftops during lazy summer evenings.',
+    icon: 'sun',
+    colors: {
+      background: '#1c1208',
+      primary: '#fb923c',
+      accent: '#f97316',
+      text: '#fff7ed',
+    },
+    player: {
+      type: 'youtube',
+      playlistId: '',
+    },
+    ytPlaylistId: 'PLNa34vIt_TT0',
+    ytMusicUrl: 'https://music.youtube.com/playlist?list=PLNa34vIt_TT0',
+    backgroundImage: '/rooms/chhat.png',
+    meta: {
+      title: 'Chhat | bharat-fm',
+      description: 'Songs that play on Indian rooftops during lazy summer evenings.',
+    },
+  },
 ];
 
 export function getRoomBySlug(slug: string): Room | undefined {
