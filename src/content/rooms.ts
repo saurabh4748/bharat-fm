@@ -127,7 +127,7 @@ export const rooms: Room[] = [
     },
     ytPlaylistId: 'PLDuSmFEUxKtQ',
     ytMusicUrl: 'https://music.youtube.com/playlist?list=PLDuSmFEUxKtQ',
-    backgroundImage: '/rooms/truck.png',
+    backgroundImage: '/rooms/truck.webp',
     meta: {
       title: 'Truck | bharat-fm',
       description: 'The songs blasting from decorated trucks on Indian highways.',
@@ -153,7 +153,7 @@ export const rooms: Room[] = [
     },
     ytPlaylistId: 'PLNa34vIt_TT0',
     ytMusicUrl: 'https://music.youtube.com/playlist?list=PLNa34vIt_TT0',
-    backgroundImage: '/rooms/chhat.png',
+    backgroundImage: '/rooms/chhat.webp',
     meta: {
       title: 'Chhat | bharat-fm',
       description: 'Songs that play on Indian rooftops during lazy summer evenings.',
