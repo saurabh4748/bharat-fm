@@ -1,26 +1,30 @@
-# bharat-fm
+# भारत-fm
 
-A multi-room ambiance web app recreating the sound and feel of 90s Indian everyday life.
+A multi-room ambiance web app recreating the sound and feel of everyday Indian life through music.
 
 ## Rooms
 
-- **Saloon** — 90s Bollywood bangers at the barber shop
-- **Tapri** — Music from the roadside chai stall
+- **सलून (Saloon)** — 90s Bollywood bangers at the barber shop
+- **टपरी (Tapri)** — Music from the roadside chai stall
+- **ऑटो रिक्शा (Auto Rickshaw)** — Songs blaring from auto-rickshaws
+- **स्टेशन (Station)** — Old film songs on railway platforms
+- **ट्रक (Truck)** — Highway truck driver anthems
+- **छत (Chhat)** — Rooftop evening vibes
 
-Each room is a static page with its own shareable URL and OG image. Audio streams from Spotify via an embedded iframe — no audio files are self-hosted.
+Each room is a static page with its own shareable URL and OG image. Music plays via the YouTube IFrame Player API from curated YouTube playlists.
 
 ## Stack
 
 - [Astro](https://astro.build/) — static site generation
 - [Tailwind CSS](https://tailwindcss.com/) — styling
+- [YouTube IFrame API](https://developers.google.com/youtube/iframe_api_reference) — music playback
 - [Satori](https://github.com/vercel/satori) + [resvg](https://github.com/yisibl/resvg-js) — build-time OG image generation
 
 ## Adding a new room
 
-1. Edit `src/content/rooms.ts` and add a new room object.
-2. Choose an `icon` value and add a matching inline SVG in `src/components/RoomCard.astro`.
-3. Provide a Spotify playlist ID.
-4. Run `npm run build` — the OG image is generated automatically.
+1. Add a background image to `public/rooms/` (use `.webp` for best performance).
+2. Edit `src/content/rooms.ts` and add a new room object with `ytPlaylistId` and `ytMusicUrl`.
+3. Run `npm run build` — the OG image is generated automatically.
 
 No new page file or component code is required.
 
@@ -40,28 +44,25 @@ npm run preview
 
 `prebuild` generates OG images into `public/og/` before Astro builds the static site.
 
-## Deploy
+## Deploy (Netlify)
 
-### Vercel (recommended)
+1. Push the repo to GitHub.
+2. Import the project in [Netlify](https://app.netlify.com/).
+3. Settings are auto-detected from `netlify.toml` — no manual config needed.
+4. No environment variables required.
 
-1. Push the repo to GitHub/GitLab/Bitbucket.
-2. Import the project in [Vercel](https://vercel.com/).
-3. Use the default settings — Astro is detected automatically.
-4. Optional: set `SITE_URL` environment variable to your production domain (e.g. `https://bharat-fm.com`). If unset, `https://bharat-fm.com` is used as fallback.
+Or deploy via CLI:
 
-### Netlify / Cloudflare Pages
+```bash
+npx netlify-cli deploy --prod --dir=dist
+```
 
-Both work with the static `dist/` output:
+## Notes
 
-- Build command: `npm run build`
-- Publish directory: `dist`
-
-## Environment variables
-
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `SITE_URL` | Used for absolute canonical and OG image URLs | `https://bharat-fm.com` |
+- YouTube playlists must be **public** and videos must have **embedding enabled**.
+- Videos that block embedding are auto-skipped.
+- No API keys, accounts, or logins required.
 
 ## License
 
-Private. All music/audio streams from Spotify.
+Private. All music streams from YouTube.
